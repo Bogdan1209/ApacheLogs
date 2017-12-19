@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ApacheLogs.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ApacheLogs.Controllers
 {
@@ -15,18 +17,14 @@ namespace ApacheLogs.Controllers
             return View();
         }
 
-        public IActionResult About()
+        public async Task<string> UploadLog(IFormFile logFile)
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            if (logFile != null)
+            {
+                
+            }
+            
+            return "Ok))0))00)))";
         }
 
         public IActionResult Error()
