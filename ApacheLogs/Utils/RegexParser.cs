@@ -1,19 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApacheLogs.Interfaces;
 using System.Text.RegularExpressions;
 using ApacheLogs.Exceptions;
 
 namespace ApacheLogs.Utils
 {
-    public class LogRegex:ILogRegex
+    public class RegexParser:IRegexParser
     {
         enum Month
         {
             Jan =1, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
         };
+
+        public string GetPageName(string htmlPage)
+        {
+            Regex patternTitle = new Regex(@"<title>(.*)</title>");
+            if (Regex.IsMatch(htmlPage, patternTitle.ToString()))
+            {
+                string title = patternTitle.Match(htmlPage).Value;
+                title = title.Replace("<title>", "").Replace("</title>", "");
+
+                return title;
+            }
+            throw new NoMatchesFoundException("Title was not found");
+        }
         public string GetIP(string logLine)
         {
             Regex patternIP = new Regex(@"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}");
@@ -52,7 +62,7 @@ namespace ApacheLogs.Utils
             Regex patternTime = new Regex(@":\d{2}\:\d{2}\:\d{2}");
             if (Regex.IsMatch(logLine, patternTime.ToString()))
             {
-                string timeStr = patternTime.Match(logLine).Value;
+                string timeStr = patternTime.Match(logLine).Value.TrimStart(':');
                 return Array.ConvertAll(timeStr.Split(':'), int.Parse);
             }
             throw new NoMatchesFoundException("Time was not found");
@@ -85,7 +95,7 @@ namespace ApacheLogs.Utils
             Regex patternResultOfRequestAndSizeOfData = new Regex(@"\d{3}\s\d+");
             if (Regex.IsMatch(logLine, patternResultOfRequestAndSizeOfData.ToString()))
             {
-                return int.Parse(patternResultOfRequestAndSizeOfData.Matches(logLine)[0].Value);
+                return int.Parse(patternResultOfRequestAndSizeOfData.Match(logLine).Value.Split(' ')[0]);
             }
             throw new NoMatchesFoundException("Result of request was not found");
         }
@@ -94,26 +104,25 @@ namespace ApacheLogs.Utils
             Regex patternPath = new Regex(@"(POST|GET|HEAD)\s\S*");
             if (Regex.IsMatch(logLine, patternPath.ToString()))
             {
-                return patternPath.Matches(logLine)[1].Value;
+                return patternPath.Match(logLine).Value.Split(' ')[1];
             }
             throw new NoMatchesFoundException("Path was not found");
         }
         public (string, bool) GetFileName(string logLine)
         {
-            Regex patternFileName = new Regex(@"\w+(\.html|\.php)");
+            Regex patternFileName = new Regex(@"([-_\w\d])*(\.html|\.php)");
             if (Regex.IsMatch(logLine, patternFileName.ToString()))
             {
                 return (patternFileName.Match(logLine).Value, true);
             }
-
-            throw new NoMatchesFoundException("File name was not found");
+            return ("", false);
         }
         public int GetSizeOfData(string logLine)
         {
             Regex patternResultOfRequestAndSizeOfData = new Regex(@"\d{3}\s\d+");
             if (Regex.IsMatch(logLine, patternResultOfRequestAndSizeOfData.ToString()))
             {
-                return int.Parse(patternResultOfRequestAndSizeOfData.Matches(logLine)[1].Value);
+                return int.Parse(patternResultOfRequestAndSizeOfData.Match(logLine).Value.Split(' ')[1]);
             }
             throw new NoMatchesFoundException("Size of data was not found");
         }

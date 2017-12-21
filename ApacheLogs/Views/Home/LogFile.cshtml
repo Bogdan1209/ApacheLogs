@@ -1,0 +1,79 @@
+﻿@using ApacheLogs.Models
+@model RequestViewModel
+
+@{
+    ViewData["Title"] = "LogFile";
+}
+
+<h2>LogFile</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                     Date
+                </th>
+                <th>
+                    Type Of Request
+                </th>
+                <th>
+                    Code Result Of Request
+                </th>
+                <th>
+                    File Name
+                </th>
+                <th>
+                    Page Name
+                </th>
+                <th>
+                    IP
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Requests) {
+        <tr>
+            <td>
+                @item.Date.ToShortDateString()
+                @item.Date.ToShortTimeString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeOfRequest)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ResultOfRequest)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.File.FileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.File.PageName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IP.IP)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+@if (Model.PageView.HasPreviousPage)
+{
+    <a asp-action="LogFile"
+       asp-route-pageNumber="@(Model.PageView.PageNumber - 1)"
+       asp-route-id="@(Model.Requests.First().LogFileId)"
+       class="btn btn-default btn">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Prev
+    </a>
+}
+@if (Model.PageView.HasNextPage)
+{
+    <a asp-action="LogFile"
+       asp-route-pageNumber="@(Model.PageView.PageNumber + 1)"
+       asp-route-id="@(Model.Requests.First().LogFileId)"
+       class="btn btn-default btn">
+        Next
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

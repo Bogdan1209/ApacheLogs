@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ApacheLogs.Interfaces
 {
-    public interface ILogRegex
+    public interface IRegexParser
     {
         string GetIP(string logLine);
         DateTime GetDateTime(string logLine);
@@ -14,5 +14,6 @@ namespace ApacheLogs.Interfaces
         string GetPath(string logLine);
         (string, bool) GetFileName(string logLine);
         int GetSizeOfData(string logLine);
+        string GetPageName(string htmlPage);
     }
 }

@@ -10,7 +10,7 @@ namespace ApacheLogs.Interfaces
 {
     public interface ILogParser
     {
-        void ParseFile(IFormFile formFile);
-
+        List<string> ConvertToList(IFormFile logFile);
+        Task<int> SaveLogsToDataBaseAsync(List<string> logs);
     }
 }

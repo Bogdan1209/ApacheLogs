@@ -45,6 +45,12 @@ namespace ApacheLogs
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "pagination",
+                    template: "{controller=Home}/{action=Index}/{id}/{pageNumber?}");
+            });
         }
     }
 }
